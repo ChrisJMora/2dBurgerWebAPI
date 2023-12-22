@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace _2dBurgerWebAPI;
+namespace _2dBurgerWebAPI.Models;
 
 public class AtributoProducto<T>
 {
