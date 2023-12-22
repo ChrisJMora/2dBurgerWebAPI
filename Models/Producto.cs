@@ -14,4 +14,7 @@ public class Producto
     public int codigoPrecioActual { get; set; }
     [Required]
     public int codigoDescuentoActual { get; set; }
+
+    public ComboComida[] comidas { get; set; } = null!;
+    public ComboComida[] combos { get; set; } = null!;
 }

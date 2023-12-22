@@ -2,7 +2,7 @@
 
 namespace _2dBurgerWebAPI.Models;
 
-public class ComidasCombo
+public class ComboComida
 {
     [Key]
     public int codigo { get; set; }
@@ -13,6 +13,6 @@ public class ComidasCombo
     [Required]
     public int cantidad { get; set; }
 
-    // public Producto comida { get; set; } = null!;
-    // public Producto combo { get; set; } = null!;
+    public Producto comida { get; set; } = null!;
+    public Producto combo { get; set; } = null!;
 }
