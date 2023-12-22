@@ -14,6 +14,8 @@ public abstract class Producto
     public int codigoPrecioActual { get; set; }
     [Required]
     public int codigoDescuentoActual { get; set; }
+    [Required]
+    public bool activo { get; set; }
 }
 
 public class Combo : Producto
