@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace _2dBurgerWebAPI.Models;
-
 public abstract class Producto
 {
     [Key]
@@ -16,15 +16,25 @@ public abstract class Producto
     public int codigoDescuentoActual { get; set; }
     [Required]
     public bool activo { get; set; } = true;
-}
 
-public class Combo : Producto
-{
-    public List<ComboComida> comidas { get; } = new();
+    public HistorialNombres nombreActual { get; set; } = null!;
 }
-public class Comida : Producto 
+public class Combo : Producto
+{ 
+    public HistorialComidas comidasActuales { get; set; } = null!;
+}
+public class Comida : Producto { }
+public class ComboComida
 {
-    // public List<Combo> combos { get; } = new();
-    // public List<ComboComida> comboComidas { get; } = new();
-    // public ComboComida[] combos { get; set; } = null!;
+    [Key]
+    [JsonIgnore]
+    public int codigo { get; set; }
+    [JsonIgnore]
+    public int codigoHistorialComida { get; set; }
+    [JsonIgnore]
+    public int codigoComida { get; set; }
+    [Required]
+    public int cantidad { get; set; }
+
+    public Comida comida { get; set; } = null!;
 }

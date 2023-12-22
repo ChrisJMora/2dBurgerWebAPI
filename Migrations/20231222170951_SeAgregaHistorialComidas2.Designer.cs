@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _2dBurgerWebAPI.Data;
 
@@ -11,9 +12,11 @@ using _2dBurgerWebAPI.Data;
 namespace _2dBurgerWebAPI.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20231222170951_SeAgregaHistorialComidas2")]
+    partial class SeAgregaHistorialComidas2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,34 @@ namespace _2dBurgerWebAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("_2dBurgerWebAPI.Models.Combo", b =>
+                {
+                    b.Property<int>("codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("codigo"));
+
+                    b.Property<bool>("activo")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("codigoDescripcionActual")
+                        .HasColumnType("int");
+
+                    b.Property<int>("codigoDescuentoActual")
+                        .HasColumnType("int");
+
+                    b.Property<int>("codigoNombreActual")
+                        .HasColumnType("int");
+
+                    b.Property<int>("codigoPrecioActual")
+                        .HasColumnType("int");
+
+                    b.HasKey("codigo");
+
+                    b.ToTable("Combos");
+                });
 
             modelBuilder.Entity("_2dBurgerWebAPI.Models.ComboComida", b =>
                 {
@@ -36,10 +67,10 @@ namespace _2dBurgerWebAPI.Migrations
                     b.Property<int>("cantidad")
                         .HasColumnType("int");
 
-                    b.Property<int>("codigoComida")
+                    b.Property<int>("codigoCombo")
                         .HasColumnType("int");
 
-                    b.Property<int>("codigoHistorialComida")
+                    b.Property<int>("codigoComida")
                         .HasColumnType("int");
 
                     b.Property<int>("comidacodigo")
@@ -52,6 +83,34 @@ namespace _2dBurgerWebAPI.Migrations
                     b.HasIndex("comidacodigo");
 
                     b.ToTable("ComboComida");
+                });
+
+            modelBuilder.Entity("_2dBurgerWebAPI.Models.Comida", b =>
+                {
+                    b.Property<int>("codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("codigo"));
+
+                    b.Property<bool>("activo")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("codigoDescripcionActual")
+                        .HasColumnType("int");
+
+                    b.Property<int>("codigoDescuentoActual")
+                        .HasColumnType("int");
+
+                    b.Property<int>("codigoNombreActual")
+                        .HasColumnType("int");
+
+                    b.Property<int>("codigoPrecioActual")
+                        .HasColumnType("int");
+
+                    b.HasKey("codigo");
+
+                    b.ToTable("Comidas");
                 });
 
             modelBuilder.Entity("_2dBurgerWebAPI.Models.HistorialComidas", b =>
@@ -123,9 +182,6 @@ namespace _2dBurgerWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("codigo"));
 
-                    b.Property<int>("codigoProducto")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("fecha")
                         .HasColumnType("datetime2");
 
@@ -134,9 +190,6 @@ namespace _2dBurgerWebAPI.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.HasKey("codigo");
-
-                    b.HasIndex("codigoProducto")
-                        .IsUnique();
 
                     b.ToTable("HistorialNombres");
                 });
@@ -160,57 +213,6 @@ namespace _2dBurgerWebAPI.Migrations
                     b.ToTable("HistorialPrecios");
                 });
 
-            modelBuilder.Entity("_2dBurgerWebAPI.Models.Producto", b =>
-                {
-                    b.Property<int>("codigo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("codigo"));
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.Property<bool>("activo")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("codigoDescripcionActual")
-                        .HasColumnType("int");
-
-                    b.Property<int>("codigoDescuentoActual")
-                        .HasColumnType("int");
-
-                    b.Property<int>("codigoNombreActual")
-                        .HasColumnType("int");
-
-                    b.Property<int>("codigoPrecioActual")
-                        .HasColumnType("int");
-
-                    b.HasKey("codigo");
-
-                    b.ToTable("Producto");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Producto");
-
-                    b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("_2dBurgerWebAPI.Models.Combo", b =>
-                {
-                    b.HasBaseType("_2dBurgerWebAPI.Models.Producto");
-
-                    b.HasDiscriminator().HasValue("Combo");
-                });
-
-            modelBuilder.Entity("_2dBurgerWebAPI.Models.Comida", b =>
-                {
-                    b.HasBaseType("_2dBurgerWebAPI.Models.Producto");
-
-                    b.HasDiscriminator().HasValue("Comida");
-                });
-
             modelBuilder.Entity("_2dBurgerWebAPI.Models.ComboComida", b =>
                 {
                     b.HasOne("_2dBurgerWebAPI.Models.HistorialComidas", null)
@@ -229,36 +231,21 @@ namespace _2dBurgerWebAPI.Migrations
             modelBuilder.Entity("_2dBurgerWebAPI.Models.HistorialComidas", b =>
                 {
                     b.HasOne("_2dBurgerWebAPI.Models.Combo", null)
-                        .WithOne("comidasActuales")
+                        .WithOne("historialComidas")
                         .HasForeignKey("_2dBurgerWebAPI.Models.HistorialComidas", "codigoCombo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("_2dBurgerWebAPI.Models.HistorialNombres", b =>
+            modelBuilder.Entity("_2dBurgerWebAPI.Models.Combo", b =>
                 {
-                    b.HasOne("_2dBurgerWebAPI.Models.Producto", null)
-                        .WithOne("nombreActual")
-                        .HasForeignKey("_2dBurgerWebAPI.Models.HistorialNombres", "codigoProducto")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.Navigation("historialComidas")
                         .IsRequired();
                 });
 
             modelBuilder.Entity("_2dBurgerWebAPI.Models.HistorialComidas", b =>
                 {
                     b.Navigation("valor");
-                });
-
-            modelBuilder.Entity("_2dBurgerWebAPI.Models.Producto", b =>
-                {
-                    b.Navigation("nombreActual")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("_2dBurgerWebAPI.Models.Combo", b =>
-                {
-                    b.Navigation("comidasActuales")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
