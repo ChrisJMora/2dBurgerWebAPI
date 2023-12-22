@@ -5,7 +5,7 @@
 namespace _2dBurgerWebAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class NormalizacionTablas : Migration
+    public partial class UnComboTieneVariasComidas2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

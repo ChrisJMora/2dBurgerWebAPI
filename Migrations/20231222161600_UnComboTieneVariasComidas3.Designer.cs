@@ -12,8 +12,8 @@ using _2dBurgerWebAPI.Data;
 namespace _2dBurgerWebAPI.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20231222063252_DefinicionValorHistoriales")]
-    partial class DefinicionValorHistoriales
+    [Migration("20231222161600_UnComboTieneVariasComidas3")]
+    partial class UnComboTieneVariasComidas3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,9 @@ namespace _2dBurgerWebAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("codigo"));
+
+                    b.Property<bool>("activo")
+                        .HasColumnType("bit");
 
                     b.Property<int>("codigoDescripcionActual")
                         .HasColumnType("int");
@@ -58,6 +61,9 @@ namespace _2dBurgerWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("codigo"));
 
+                    b.Property<int?>("Combocodigo")
+                        .HasColumnType("int");
+
                     b.Property<int>("cantidad")
                         .HasColumnType("int");
 
@@ -67,11 +73,14 @@ namespace _2dBurgerWebAPI.Migrations
                     b.Property<int>("codigoComida")
                         .HasColumnType("int");
 
+                    b.Property<int>("comidacodigo")
+                        .HasColumnType("int");
+
                     b.HasKey("codigo");
 
-                    b.HasIndex("codigoCombo");
+                    b.HasIndex("Combocodigo");
 
-                    b.HasIndex("codigoComida");
+                    b.HasIndex("comidacodigo");
 
                     b.ToTable("ComboComida");
                 });
@@ -83,6 +92,9 @@ namespace _2dBurgerWebAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("codigo"));
+
+                    b.Property<bool>("activo")
+                        .HasColumnType("bit");
 
                     b.Property<int>("codigoDescripcionActual")
                         .HasColumnType("int");
@@ -181,31 +193,22 @@ namespace _2dBurgerWebAPI.Migrations
 
             modelBuilder.Entity("_2dBurgerWebAPI.Models.ComboComida", b =>
                 {
-                    b.HasOne("_2dBurgerWebAPI.Models.Combo", "combo")
-                        .WithMany("comidas")
-                        .HasForeignKey("codigoCombo")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.HasOne("_2dBurgerWebAPI.Models.Combo", null)
+                        .WithMany("comboComidas")
+                        .HasForeignKey("Combocodigo");
 
                     b.HasOne("_2dBurgerWebAPI.Models.Comida", "comida")
-                        .WithMany("combos")
-                        .HasForeignKey("codigoComida")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .WithMany()
+                        .HasForeignKey("comidacodigo")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("combo");
 
                     b.Navigation("comida");
                 });
 
             modelBuilder.Entity("_2dBurgerWebAPI.Models.Combo", b =>
                 {
-                    b.Navigation("comidas");
-                });
-
-            modelBuilder.Entity("_2dBurgerWebAPI.Models.Comida", b =>
-                {
-                    b.Navigation("combos");
+                    b.Navigation("comboComidas");
                 });
 #pragma warning restore 612, 618
         }

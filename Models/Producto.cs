@@ -20,9 +20,11 @@ public abstract class Producto
 
 public class Combo : Producto
 {
-    public ComboComida[] comidas { get; set; } = null!;
+    public List<ComboComida> comidas { get; } = new();
 }
 public class Comida : Producto 
 {
-    public ComboComida[] combos { get; set; } = null!;
+    // public List<Combo> combos { get; } = new();
+    // public List<ComboComida> comboComidas { get; } = new();
+    // public ComboComida[] combos { get; set; } = null!;
 }

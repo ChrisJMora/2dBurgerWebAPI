@@ -12,8 +12,8 @@ using _2dBurgerWebAPI.Data;
 namespace _2dBurgerWebAPI.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20231222063859_CampoActivoProducto")]
-    partial class CampoActivoProducto
+    [Migration("20231222161229_UnComboTieneVariasComidas1")]
+    partial class UnComboTieneVariasComidas1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,11 +70,17 @@ namespace _2dBurgerWebAPI.Migrations
                     b.Property<int>("codigoComida")
                         .HasColumnType("int");
 
+                    b.Property<int>("combocodigo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("comidacodigo")
+                        .HasColumnType("int");
+
                     b.HasKey("codigo");
 
-                    b.HasIndex("codigoCombo");
+                    b.HasIndex("combocodigo");
 
-                    b.HasIndex("codigoComida");
+                    b.HasIndex("comidacodigo");
 
                     b.ToTable("ComboComida");
                 });
@@ -188,15 +194,15 @@ namespace _2dBurgerWebAPI.Migrations
             modelBuilder.Entity("_2dBurgerWebAPI.Models.ComboComida", b =>
                 {
                     b.HasOne("_2dBurgerWebAPI.Models.Combo", "combo")
-                        .WithMany("comidas")
-                        .HasForeignKey("codigoCombo")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .WithMany("comboComidas")
+                        .HasForeignKey("combocodigo")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("_2dBurgerWebAPI.Models.Comida", "comida")
-                        .WithMany("combos")
-                        .HasForeignKey("codigoComida")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .WithMany("comboComidas")
+                        .HasForeignKey("comidacodigo")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("combo");
@@ -206,12 +212,12 @@ namespace _2dBurgerWebAPI.Migrations
 
             modelBuilder.Entity("_2dBurgerWebAPI.Models.Combo", b =>
                 {
-                    b.Navigation("comidas");
+                    b.Navigation("comboComidas");
                 });
 
             modelBuilder.Entity("_2dBurgerWebAPI.Models.Comida", b =>
                 {
-                    b.Navigation("combos");
+                    b.Navigation("comboComidas");
                 });
 #pragma warning restore 612, 618
         }

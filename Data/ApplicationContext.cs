@@ -7,7 +7,6 @@ public class ApplicationContext : DbContext
 {
     public DbSet<Comida> Comidas { get; set; } = null!;
     public DbSet<Combo> Combos { get; set; } = null!;
-    public DbSet<ComboComida> ComboComida { get; set; } = null!;
     public DbSet<HistorialNombres> HistorialNombres { get; set; } = null!;
     public DbSet<HistorialDescripciones> HistorialDescripciones { get; set; } = null!;
     public DbSet<HistorialPrecios> HistorialPrecios { get; set; } = null!;
@@ -26,25 +25,24 @@ public class ApplicationContext : DbContext
         modelBuilder.Entity<Combo>(entity =>
         {
             //Un combo tiene una o varias comidas
-            entity.HasMany(e => e.comidas)
-                .WithOne(e => e.combo)
-                .HasForeignKey(e => e.codigoCombo)
-                .OnDelete(DeleteBehavior.NoAction);
+            entity
+                .HasMany<Comida>()
+                .WithMany()
+                .UsingEntity<ComboComida>();
+
+            // entity.HasMany(e => e.comidas)
+            //     .WithOne(e => e.combo)
+            //     .HasForeignKey(e => e.codigoCombo)
+            //     .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<Comida>(entity =>
         {
             //Una comida puede pertenecer a uno o varios combos
-            entity.HasMany(e => e.combos)
-                .WithOne(e => e.comida)
-                .HasForeignKey(e => e.codigoComida)
-                .OnDelete(DeleteBehavior.NoAction);
-        });
-
-        modelBuilder.Entity<ComboComida>(entity =>
-        {
-            entity.HasIndex(e => e.codigoCombo).IsUnique(false);
-            entity.HasIndex(e => e.codigoComida).IsUnique(false);
+            // entity.HasMany(e => e.combos)
+            //     .WithOne(e => e.comida)
+            //     .HasForeignKey(e => e.codigoComida)
+            //     .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<HistorialNombres>(entity =>

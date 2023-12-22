@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _2dBurgerWebAPI.Data;
 
@@ -11,9 +12,11 @@ using _2dBurgerWebAPI.Data;
 namespace _2dBurgerWebAPI.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20231222153936_UnComboTieneVariasComidas")]
+    partial class UnComboTieneVariasComidas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,9 +61,6 @@ namespace _2dBurgerWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("codigo"));
 
-                    b.Property<int?>("Combocodigo")
-                        .HasColumnType("int");
-
                     b.Property<int>("cantidad")
                         .HasColumnType("int");
 
@@ -70,14 +70,11 @@ namespace _2dBurgerWebAPI.Migrations
                     b.Property<int>("codigoComida")
                         .HasColumnType("int");
 
-                    b.Property<int>("comidacodigo")
-                        .HasColumnType("int");
-
                     b.HasKey("codigo");
 
-                    b.HasIndex("Combocodigo");
+                    b.HasIndex("codigoCombo");
 
-                    b.HasIndex("comidacodigo");
+                    b.HasIndex("codigoComida");
 
                     b.ToTable("ComboComida");
                 });
@@ -190,20 +187,29 @@ namespace _2dBurgerWebAPI.Migrations
 
             modelBuilder.Entity("_2dBurgerWebAPI.Models.ComboComida", b =>
                 {
-                    b.HasOne("_2dBurgerWebAPI.Models.Combo", null)
+                    b.HasOne("_2dBurgerWebAPI.Models.Combo", "combo")
                         .WithMany("comboComidas")
-                        .HasForeignKey("Combocodigo");
+                        .HasForeignKey("codigoCombo")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("_2dBurgerWebAPI.Models.Comida", "comida")
-                        .WithMany()
-                        .HasForeignKey("comidacodigo")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("comboComidas")
+                        .HasForeignKey("codigoComida")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("combo");
 
                     b.Navigation("comida");
                 });
 
             modelBuilder.Entity("_2dBurgerWebAPI.Models.Combo", b =>
+                {
+                    b.Navigation("comboComidas");
+                });
+
+            modelBuilder.Entity("_2dBurgerWebAPI.Models.Comida", b =>
                 {
                     b.Navigation("comboComidas");
                 });
