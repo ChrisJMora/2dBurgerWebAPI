@@ -3,6 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using _2dBurgerWebAPI.Models;
+using _2dBurgerWebAPI.Models.Productos;
 public class ApplicationContext : DbContext
 {
     public DbSet<Comida> Comidas { get; set; } = null!;
