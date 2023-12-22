@@ -13,6 +13,6 @@ public class ComboComida
     [Required]
     public int cantidad { get; set; }
 
-    public Producto comida { get; set; } = null!;
-    public Producto combo { get; set; } = null!;
+    public Comida comida { get; set; } = null!;
+    public Combo combo { get; set; } = null!;
 }
