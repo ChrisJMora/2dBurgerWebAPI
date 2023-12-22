@@ -12,18 +12,12 @@ public abstract class Historial<T>
     public DateTime fecha { get; set; }
     [Required]
     public T valor { get; set; } = default!;
-}
-
-public class HistorialNombres : Historial<string>
-{
     [JsonIgnore]
     public int codigoProducto { get; set; }
 }
+
+public class HistorialNombres : Historial<string>{}
 public class HistorialDescripciones : Historial<string>{}
 public class HistorialPrecios : Historial<decimal>{}
 public class HistorialDescuentos : Historial<decimal>{}
-public class HistorialComidas : Historial<List<ComboComida>>
-{
-    [JsonIgnore]
-    public int codigoCombo { get; set; }
-}
+public class HistorialComidas : Historial<List<ComboComida>>{}

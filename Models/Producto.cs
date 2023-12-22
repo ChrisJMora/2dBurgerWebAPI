@@ -6,18 +6,26 @@ public abstract class Producto
 {
     [Key]
     public int codigo { get; set; }
+    
     [Required]
+    [JsonIgnore]
     public int codigoNombreActual { get; set; }
     [Required]
+    [JsonIgnore]
     public int codigoDescripcionActual { get; set; }
     [Required]
+    [JsonIgnore]
     public int codigoPrecioActual { get; set; }
     [Required]
+    [JsonIgnore]
     public int codigoDescuentoActual { get; set; }
-    [Required]
-    public bool activo { get; set; } = true;
 
     public HistorialNombres nombreActual { get; set; } = null!;
+    public HistorialDescripciones descripcionActual { get; set; } = null!;
+    public HistorialPrecios precioActual { get; set; } = null!;
+    public HistorialDescuentos descuentoActual { get; set; } = null!;
+    [Required]
+    public bool activo { get; set; } = true;
 }
 public class Combo : Producto
 { 

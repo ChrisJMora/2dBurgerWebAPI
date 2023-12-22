@@ -30,13 +30,6 @@ public class ApplicationContext : DbContext
                 .HasForeignKey<HistorialNombres>(e => e.codigoProducto);
         });
 
-        modelBuilder.Entity<Combo>(entity => {
-            entity
-                .HasOne(e => e.comidasActuales)
-                .WithOne()
-                .HasForeignKey<HistorialComidas>(e => e.codigoCombo);
-        });
-
         modelBuilder.Entity<HistorialComidas>(entity =>
         {
             //Un combo tiene una o varias comidas
@@ -45,8 +38,6 @@ public class ApplicationContext : DbContext
                 .WithMany()
                 .UsingEntity<ComboComida>();
         });
-
-
 
         modelBuilder.Entity<HistorialNombres>(entity =>
         {
