@@ -1,0 +1,6 @@
+@_2dBurgerWebAPI_HostAddress = http://localhost:5216
+
+GET {{_2dBurgerWebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
