@@ -28,4 +28,12 @@ public class ProductoController : Controller
         return await _context.Comidas.ToListAsync();
     }
 
+    [HttpPost("AgregarComida/{nombre}/{descripcion}/{precio}/{decuento}")]
+    public async Task AgregarComida(string nombre, string descripcion, double precio, double decuento)
+    {
+        Comida comida = new Comida();
+        comida.InicializarProducto(nombre, descripcion, (decimal)precio, (decimal)decuento);
+        _context.Comidas.Add(comida);
+        await _context.SaveChangesAsync();
+    }
 }

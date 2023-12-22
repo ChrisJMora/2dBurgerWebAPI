@@ -12,8 +12,6 @@ public abstract class Historial<T>
     public DateTime fecha { get; set; }
     [Required]
     public T valor { get; set; } = default!;
-    [JsonIgnore]
-    public int codigoProducto { get; set; }
 }
 
 public class HistorialNombres : Historial<string>{}

@@ -62,9 +62,6 @@ namespace _2dBurgerWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("codigo"));
 
-                    b.Property<int>("codigoProducto")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("fecha")
                         .HasColumnType("datetime2");
 
@@ -80,9 +77,6 @@ namespace _2dBurgerWebAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("codigo"));
-
-                    b.Property<int>("codigoProducto")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("fecha")
                         .HasColumnType("datetime2");
@@ -104,9 +98,6 @@ namespace _2dBurgerWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("codigo"));
 
-                    b.Property<int>("codigoProducto")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("fecha")
                         .HasColumnType("datetime2");
 
@@ -126,9 +117,6 @@ namespace _2dBurgerWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("codigo"));
 
-                    b.Property<int>("codigoProducto")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("fecha")
                         .HasColumnType("datetime2");
 
@@ -137,9 +125,6 @@ namespace _2dBurgerWebAPI.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.HasKey("codigo");
-
-                    b.HasIndex("codigoProducto")
-                        .IsUnique();
 
                     b.ToTable("HistorialNombres");
                 });
@@ -151,9 +136,6 @@ namespace _2dBurgerWebAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("codigo"));
-
-                    b.Property<int>("codigoProducto")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("fecha")
                         .HasColumnType("datetime2");
@@ -194,22 +176,19 @@ namespace _2dBurgerWebAPI.Migrations
                     b.Property<int>("codigoPrecioActual")
                         .HasColumnType("int");
 
-                    b.Property<int>("descripcionActualcodigo")
-                        .HasColumnType("int");
-
-                    b.Property<int>("descuentoActualcodigo")
-                        .HasColumnType("int");
-
-                    b.Property<int>("precioActualcodigo")
-                        .HasColumnType("int");
-
                     b.HasKey("codigo");
 
-                    b.HasIndex("descripcionActualcodigo");
+                    b.HasIndex("codigoDescripcionActual")
+                        .IsUnique();
 
-                    b.HasIndex("descuentoActualcodigo");
+                    b.HasIndex("codigoDescuentoActual")
+                        .IsUnique();
 
-                    b.HasIndex("precioActualcodigo");
+                    b.HasIndex("codigoNombreActual")
+                        .IsUnique();
+
+                    b.HasIndex("codigoPrecioActual")
+                        .IsUnique();
 
                     b.ToTable("Producto");
 
@@ -252,38 +231,37 @@ namespace _2dBurgerWebAPI.Migrations
                     b.Navigation("comida");
                 });
 
-            modelBuilder.Entity("_2dBurgerWebAPI.Models.HistorialNombres", b =>
-                {
-                    b.HasOne("_2dBurgerWebAPI.Models.Producto", null)
-                        .WithOne("nombreActual")
-                        .HasForeignKey("_2dBurgerWebAPI.Models.HistorialNombres", "codigoProducto")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("_2dBurgerWebAPI.Models.Producto", b =>
                 {
                     b.HasOne("_2dBurgerWebAPI.Models.HistorialDescripciones", "descripcionActual")
-                        .WithMany()
-                        .HasForeignKey("descripcionActualcodigo")
+                        .WithOne()
+                        .HasForeignKey("_2dBurgerWebAPI.Models.Producto", "codigoDescripcionActual")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("_2dBurgerWebAPI.Models.HistorialDescuentos", "descuentoActual")
-                        .WithMany()
-                        .HasForeignKey("descuentoActualcodigo")
+                        .WithOne()
+                        .HasForeignKey("_2dBurgerWebAPI.Models.Producto", "codigoDescuentoActual")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("_2dBurgerWebAPI.Models.HistorialNombres", "nombreActual")
+                        .WithOne()
+                        .HasForeignKey("_2dBurgerWebAPI.Models.Producto", "codigoNombreActual")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("_2dBurgerWebAPI.Models.HistorialPrecios", "precioActual")
-                        .WithMany()
-                        .HasForeignKey("precioActualcodigo")
+                        .WithOne()
+                        .HasForeignKey("_2dBurgerWebAPI.Models.Producto", "codigoPrecioActual")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("descripcionActual");
 
                     b.Navigation("descuentoActual");
+
+                    b.Navigation("nombreActual");
 
                     b.Navigation("precioActual");
                 });
@@ -302,12 +280,6 @@ namespace _2dBurgerWebAPI.Migrations
             modelBuilder.Entity("_2dBurgerWebAPI.Models.HistorialComidas", b =>
                 {
                     b.Navigation("valor");
-                });
-
-            modelBuilder.Entity("_2dBurgerWebAPI.Models.Producto", b =>
-                {
-                    b.Navigation("nombreActual")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

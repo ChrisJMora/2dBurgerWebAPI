@@ -27,7 +27,19 @@ public class ApplicationContext : DbContext
             entity
                 .HasOne(e => e.nombreActual)
                 .WithOne()
-                .HasForeignKey<HistorialNombres>(e => e.codigoProducto);
+                .HasForeignKey<Producto>(e => e.codigoNombreActual);
+            entity
+                .HasOne(e => e.descripcionActual)
+                .WithOne()
+                .HasForeignKey<Producto> (e => e.codigoDescripcionActual);
+            entity
+                .HasOne(e => e.precioActual)
+                .WithOne()
+                .HasForeignKey<Producto>(e => e.codigoPrecioActual);
+            entity
+                .HasOne(e => e.descuentoActual)
+                .WithOne()
+                .HasForeignKey<Producto>(e => e.codigoDescuentoActual);
         });
 
         modelBuilder.Entity<HistorialComidas>(entity =>
