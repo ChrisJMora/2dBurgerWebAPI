@@ -5,18 +5,20 @@ using Microsoft.EntityFrameworkCore;
 using _2dBurgerWebAPI.Models;
 public class ApplicationContext : DbContext
 {
-    DbSet<Comida> Comidas { get; set; } = null!;
-    DbSet<Combo> Combos { get; set; } = null!;
-    DbSet<ComboComida> ComboComida { get; set; } = null!;
-    DbSet<HistorialNombres> HistorialNombres { get; set; } = null!;
-    DbSet<HistorialDescripciones> HistorialDescripciones { get; set; } = null!;
-    DbSet<HistorialPrecios> HistorialPrecios { get; set; } = null!;
-    DbSet<HistorialDescuentos> HistorialDescuentos { get; set; } = null!;
+    public DbSet<Comida> Comidas { get; set; } = null!;
+    public DbSet<Combo> Combos { get; set; } = null!;
+    public DbSet<ComboComida> ComboComida { get; set; } = null!;
+    public DbSet<HistorialNombres> HistorialNombres { get; set; } = null!;
+    public DbSet<HistorialDescripciones> HistorialDescripciones { get; set; } = null!;
+    public DbSet<HistorialPrecios> HistorialPrecios { get; set; } = null!;
+    public DbSet<HistorialDescuentos> HistorialDescuentos { get; set; } = null!;
 
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
+    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        //its a bad practice use the string connection like this...
-        options.UseSqlServer(@"Server=ChrisLp\CHRISDBSERVER;Initial Catalog=2dBurger;User ID=sa;Password=123;Encrypt=True;TrustServerCertificate=True"); 
+        // its a bad practice use the string connection like this...
+    //  options.UseSqlServer(@"Server=ChrisLp\CHRISDBSERVER;Initial Catalog=2dBurger;User ID=sa;Password=123;Encrypt=True;TrustServerCertificate=True"); 
+        optionsBuilder.EnableSensitiveDataLogging(); // Enable sensitive data logging
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
