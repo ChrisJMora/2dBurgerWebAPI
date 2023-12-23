@@ -5,6 +5,8 @@ using _2dBurgerWebAPI.Data;
 using _2dBurgerWebAPI.Models;
 using _2dBurgerWebAPI.Models.Productos;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
+using System.ComponentModel;
 
 [ApiController]
 [Route("[controller]")]
@@ -49,41 +51,26 @@ public class ProductoController : Controller
     }
 
     [HttpPost("AgregarCombo/{nombre}/{descripcion}/{descuento}")]
-    public async Task AgregarCombo(string nombre, string descripcion, decimal descuento, int[] codigosComidas)
+    public async Task AgregarCombo(string nombre, string descripcion, decimal descuento, Dictionary<int, int> codigosComidas)
     {
         Combo combo = new Combo();
-        combo.InicializarCombo(nombre, descripcion, descuento);
-        List<ComboComida> comboComidas = await InicializarComidas(codigosComidas);
+        List<ComboComida> comboComidas = await InicializarComidasCombo(codigosComidas);
         combo.comidasActuales = new HistorialComidas { fecha = DateTime.Now, valor = comboComidas };
+        combo.InicializarCombo(nombre, descripcion, descuento);
         _context.Combos.Add(combo);
         await _context.SaveChangesAsync();
     }
-
-
-    private async Task<List<ComboComida>> InicializarComidas(int[] codigosComidas)
+    private async Task<List<ComboComida>> InicializarComidasCombo(Dictionary<int, int> codigosComidas)
     {
         List<ComboComida> comboComidas = new List<ComboComida>();
-        List<Comida> comidas = await BuscarComidas(codigosComidas);
-        foreach (Comida comida in comidas)
+        foreach (KeyValuePair<int, int> codigoComida in codigosComidas)
         {
-            comboComidas.Add(new ComboComida { comida = comida });
+            Comida? comida = await _context.Comidas.FindAsync(codigoComida.Key);
+            if (comida == null)
+                throw new Exception("No se encontró la comida");
+            ComboComida comboComida = new ComboComida { comida = comida, cantidad = codigoComida.Value };
+            comboComidas.Add(comboComida);
         }
         return comboComidas;
     }
-
-    private async Task<List<Comida>> BuscarComidas(int[] codigosComidas)
-    {
-        List<Comida> comidas = new List<Comida>();
-        foreach (int codigo in codigosComidas)
-        {
-            Comida? comida = await _context.Comidas.FindAsync(codigo);
-            if (comida == null)
-            {
-                throw new Exception("No se encontro la comida con el codigo: " + codigo);
-            }
-            comidas.Add(comida);
-        }
-        return comidas;
-    }
-
 }

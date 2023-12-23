@@ -17,10 +17,10 @@ public abstract class Producto
     [Required]
     public bool activo { get; set; }
 
-    public HistorialNombres nombreActual { get; set; } = null!;
-    public HistorialDescripciones descripcionActual { get; set; } = null!;
-    public HistorialPrecios precioActual { get; set; } = null!;
-    public HistorialDescuentos descuentoActual { get; set; } = null!;
+    public virtual HistorialNombres nombreActual { get; set; } = null!;
+    public virtual HistorialDescripciones descripcionActual { get; set; } = null!;
+    public virtual HistorialPrecios precioActual { get; set; } = null!;
+    public virtual HistorialDescuentos descuentoActual { get; set; } = null!;
 
     public void InicializarProducto(string nombre, string descripcion, decimal descuento)
     {
@@ -33,17 +33,28 @@ public abstract class Producto
 }
 public class Combo : Producto
 { 
-    public HistorialComidas comidasActuales { get; set; } = null!;
+    public int codigoComidasActuales { get; set; }
+    public virtual HistorialComidas comidasActuales { get; set; } = null!;
 
     public void InicializarCombo(string nombre, string descripcion, decimal descuento)
     {
         InicializarProducto(nombre, descripcion, descuento);
-
+        InicializarPrecioCombo();
     }
-
+    private void InicializarPrecioCombo()
+    {
+        decimal precioTotal = 0;
+        foreach (ComboComida comboComida in comidasActuales.valor)
+        {
+            precioTotal += comboComida.comida.precioActual.valor * comboComida.cantidad;
+        }
+        precioActual = new HistorialPrecios { fecha = DateTime.Now, valor = precioTotal };
+    }
 }
 public class Comida : Producto 
 {
+    public virtual List<HistorialComidas> historialComidas { get; set; } = new();
+    public virtual List<ComboComida> comboComidas { get; set; } = new();
     public void InicializarComida(string nombre, string descripcion, decimal precio, decimal descuento)
     {
         InicializarProducto(nombre, descripcion, descuento);

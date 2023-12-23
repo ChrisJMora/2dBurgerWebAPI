@@ -1,5 +1,6 @@
 using _2dBurgerWebAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Proxies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +13,9 @@ builder.Services.AddSwaggerGen();
 
 // Add DbContext
 builder.Services.AddDbContext<ApplicationContext>(option =>
-{
-    option.UseSqlServer(builder.Configuration.GetConnectionString("ConsStr"));
+{   option
+    .UseLazyLoadingProxies()   
+    .UseSqlServer(builder.Configuration.GetConnectionString("ConsStr"));
 });
 
 var app = builder.Build();

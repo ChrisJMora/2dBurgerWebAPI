@@ -11,7 +11,7 @@ public class ProductoDTO
 
 public class ComboDTO : ProductoDTO
 {
-    public List<ComidaDTO> comidas { get; set; } = null!;
+    public virtual List<ComidaDTO> comidas { get; set; } = null!;
 }
 
 public class ComidaDTO : ProductoDTO {}

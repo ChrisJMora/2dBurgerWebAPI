@@ -45,7 +45,7 @@ namespace _2dBurgerWebAPI.Migrations
                     codigo = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    valor = table.Column<decimal>(type: "decimal(3,2)", nullable: false)
+                    valor = table.Column<decimal>(type: "decimal(18,0)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -73,7 +73,7 @@ namespace _2dBurgerWebAPI.Migrations
                     codigo = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    valor = table.Column<decimal>(type: "decimal(3,2)", nullable: false)
+                    valor = table.Column<decimal>(type: "decimal(18,0)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -92,14 +92,14 @@ namespace _2dBurgerWebAPI.Migrations
                     codigoDescuentoActual = table.Column<int>(type: "int", nullable: false),
                     activo = table.Column<bool>(type: "bit", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    comidasActualescodigo = table.Column<int>(type: "int", nullable: true)
+                    codigoComidasActuales = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Producto", x => x.codigo);
                     table.ForeignKey(
-                        name: "FK_Producto_HistorialComidas_comidasActualescodigo",
-                        column: x => x.comidasActualescodigo,
+                        name: "FK_Producto_HistorialComidas_codigoComidasActuales",
+                        column: x => x.codigoComidasActuales,
                         principalTable: "HistorialComidas",
                         principalColumn: "codigo",
                         onDelete: ReferentialAction.Cascade);
@@ -135,37 +135,41 @@ namespace _2dBurgerWebAPI.Migrations
                 {
                     codigo = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    codigoHistorialComida = table.Column<int>(type: "int", nullable: false),
-                    codigoComida = table.Column<int>(type: "int", nullable: false),
                     cantidad = table.Column<int>(type: "int", nullable: false),
-                    comidacodigo = table.Column<int>(type: "int", nullable: false),
-                    HistorialComidascodigo = table.Column<int>(type: "int", nullable: true)
+                    codigoHistorialComida = table.Column<int>(type: "int", nullable: false),
+                    codigoComida = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ComboComida", x => x.codigo);
                     table.ForeignKey(
-                        name: "FK_ComboComida_HistorialComidas_HistorialComidascodigo",
-                        column: x => x.HistorialComidascodigo,
+                        name: "FK_ComboComida_HistorialComidas_codigoHistorialComida",
+                        column: x => x.codigoHistorialComida,
                         principalTable: "HistorialComidas",
                         principalColumn: "codigo");
                     table.ForeignKey(
-                        name: "FK_ComboComida_Producto_comidacodigo",
-                        column: x => x.comidacodigo,
+                        name: "FK_ComboComida_Producto_codigoComida",
+                        column: x => x.codigoComida,
                         principalTable: "Producto",
-                        principalColumn: "codigo",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "codigo");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ComboComida_comidacodigo",
+                name: "IX_ComboComida_codigoComida",
                 table: "ComboComida",
-                column: "comidacodigo");
+                column: "codigoComida");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ComboComida_HistorialComidascodigo",
+                name: "IX_ComboComida_codigoHistorialComida",
                 table: "ComboComida",
-                column: "HistorialComidascodigo");
+                column: "codigoHistorialComida");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Producto_codigoComidasActuales",
+                table: "Producto",
+                column: "codigoComidasActuales",
+                unique: true,
+                filter: "[codigoComidasActuales] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Producto_codigoDescripcionActual",
@@ -190,11 +194,6 @@ namespace _2dBurgerWebAPI.Migrations
                 table: "Producto",
                 column: "codigoPrecioActual",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Producto_comidasActualescodigo",
-                table: "Producto",
-                column: "comidasActualescodigo");
         }
 
         /// <inheritdoc />

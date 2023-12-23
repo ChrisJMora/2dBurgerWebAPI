@@ -43,13 +43,31 @@ public class ApplicationContext : DbContext
                 .HasForeignKey<Producto>(e => e.codigoDescuentoActual);
         });
 
+        modelBuilder.Entity<Combo>(entity =>
+        {
+            entity
+                .HasOne(e => e.comidasActuales)
+                .WithOne()
+                .HasForeignKey<Combo>(e => e.codigoComidasActuales);
+        });
+
         modelBuilder.Entity<HistorialComidas>(entity =>
         {
-            //Un combo tiene una o varias comidas
             entity
-                .HasMany<Comida>()
-                .WithMany()
-                .UsingEntity<ComboComida>();
+                .HasMany(e => e.Comidas)
+                .WithMany(e => e.historialComidas)
+                .UsingEntity<ComboComida>(
+                    r => r
+                        .HasOne(e => e.comida)
+                        .WithMany(e => e.comboComidas)
+                        .HasForeignKey(e => e.codigoComida)
+                        .OnDelete(DeleteBehavior.NoAction),
+                    l => l
+                        .HasOne(e => e.historialComida)
+                        .WithMany(e => e.valor)
+                        .HasForeignKey(e => e.codigoHistorialComida)
+                        .OnDelete(DeleteBehavior.NoAction)
+                );
         });
 
         modelBuilder.Entity<HistorialNombres>(entity =>
@@ -64,12 +82,12 @@ public class ApplicationContext : DbContext
 
         modelBuilder.Entity<HistorialPrecios>(entity =>
         {
-            entity.Property(e => e.valor).HasColumnType("decimal(3,2)");
+            entity.Property(e => e.valor).HasColumnType("decimal");
         });
 
         modelBuilder.Entity<HistorialDescuentos>(entity =>
         {
-            entity.Property(e => e.valor).HasColumnType("decimal(3,2)");
+            entity.Property(e => e.valor).HasColumnType("decimal");
         });
 
     //Run in cli
