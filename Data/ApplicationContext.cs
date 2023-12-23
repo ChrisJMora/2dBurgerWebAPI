@@ -1,18 +1,19 @@
-﻿namespace _2dBurgerWebAPI.Data;
+﻿using _2dBurgerWebAPI.Models.Logs;
+using _2dBurgerWebAPI.Models.Products;
+
+namespace _2dBurgerWebAPI.Data;
 
 using Microsoft.EntityFrameworkCore;
 
-using _2dBurgerWebAPI.Models;
-using _2dBurgerWebAPI.Models.Productos;
 public class ApplicationContext : DbContext
 {
-    public DbSet<Comida> Comidas { get; set; } = null!;
+    public DbSet<Food> Foods { get; set; } = null!;
     public DbSet<Combo> Combos { get; set; } = null!;
-    public DbSet<HistorialComidas> HistorialComidas { get; set; } = null!;
-    public DbSet<HistorialNombres> HistorialNombres { get; set; } = null!;
-    public DbSet<HistorialDescripciones> HistorialDescripciones { get; set; } = null!;
-    public DbSet<HistorialPrecios> HistorialPrecios { get; set; } = null!;
-    public DbSet<HistorialDescuentos> HistorialDescuentos { get; set; } = null!;
+    public DbSet<FoodsLog> FoodsLog { get; set; } = null!;
+    public DbSet<NamesLog> NamesLog { get; set; } = null!;
+    public DbSet<DescriptionsLog> DescriptionsLog { get; set; } = null!;
+    public DbSet<PricesLog> PricesLog { get; set; } = null!;
+    public DbSet<DiscountsLog> DiscountsLog { get; set; } = null!;
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -24,52 +25,70 @@ public class ApplicationContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Producto>(entity => {
+        modelBuilder.Entity<Product>(entity => {
             entity
-                .HasOne(e => e.nombreActual)
+                .HasOne(e => e.CurrentName)
                 .WithOne()
-                .HasForeignKey<Producto>(e => e.codigoNombreActual);
+                .HasForeignKey<Product>(e => e.CurrentNameId);
             entity
-                .HasOne(e => e.descripcionActual)
+                .HasOne(e => e.CurrentDescription)
                 .WithOne()
-                .HasForeignKey<Producto> (e => e.codigoDescripcionActual);
+                .HasForeignKey<Product> (e => e.CurrentDescriptionId);
             entity
-                .HasOne(e => e.precioActual)
+                .HasOne(e => e.CurrentPrice)
                 .WithOne()
-                .HasForeignKey<Producto>(e => e.codigoPrecioActual);
+                .HasForeignKey<Product>(e => e.CurrentPriceId);
             entity
-                .HasOne(e => e.descuentoActual)
+                .HasOne(e => e.CurrentDiscount)
                 .WithOne()
-                .HasForeignKey<Producto>(e => e.codigoDescuentoActual);
+                .HasForeignKey<Product>(e => e.CurrentDiscountId);
         });
 
-        modelBuilder.Entity<HistorialComidas>(entity =>
+        modelBuilder.Entity<Combo>(entity =>
         {
-            //Un combo tiene una o varias comidas
             entity
-                .HasMany<Comida>()
-                .WithMany()
-                .UsingEntity<ComboComida>();
+                .HasOne(e => e.CurrentFoods)
+                .WithOne()
+                .HasForeignKey<Combo>(e => e.CurrentFoodsId);
         });
 
-        modelBuilder.Entity<HistorialNombres>(entity =>
+        modelBuilder.Entity<FoodsLog>(entity =>
         {
-            entity.Property(e => e.valor).HasColumnType("varchar(50)");
+            entity
+                .HasMany(e => e.Foods)
+                .WithMany(e => e.FoodLog)
+                .UsingEntity<ComboFood>(
+                    r => r
+                        .HasOne(e => e.Food)
+                        .WithMany(e => e.ComboFoods)
+                        .HasForeignKey(e => e.FoodId)
+                        .OnDelete(DeleteBehavior.NoAction),
+                    l => l
+                        .HasOne(e => e.FoodLog)
+                        .WithMany(e => e.Value)
+                        .HasForeignKey(e => e.FoodLogId)
+                        .OnDelete(DeleteBehavior.NoAction)
+                );
         });
 
-        modelBuilder.Entity<HistorialDescripciones>(entity =>
+        modelBuilder.Entity<NamesLog>(entity =>
         {
-            entity.Property(e => e.valor).HasColumnType("varchar(100)");
+            entity.Property(e => e.Value).HasColumnType("varchar(50)");
         });
 
-        modelBuilder.Entity<HistorialPrecios>(entity =>
+        modelBuilder.Entity<DescriptionsLog>(entity =>
         {
-            entity.Property(e => e.valor).HasColumnType("decimal(3,2)");
+            entity.Property(e => e.Value).HasColumnType("varchar(100)");
         });
 
-        modelBuilder.Entity<HistorialDescuentos>(entity =>
+        modelBuilder.Entity<PricesLog>(entity =>
         {
-            entity.Property(e => e.valor).HasColumnType("decimal(3,2)");
+            entity.Property(e => e.Value).HasColumnType("decimal");
+        });
+
+        modelBuilder.Entity<DiscountsLog>(entity =>
+        {
+            entity.Property(e => e.Value).HasColumnType("decimal");
         });
 
     //Run in cli
