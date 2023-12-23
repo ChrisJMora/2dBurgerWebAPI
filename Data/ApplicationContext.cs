@@ -45,11 +45,38 @@ public class ApplicationContext : DbContext
         });
 
         modelBuilder.Entity<Combo>(entity =>
+<<<<<<< HEAD
         {
             entity
                 .HasOne(e => e.CurrentFoods)
                 .WithOne()
                 .HasForeignKey<Combo>(e => e.CurrentFoodsId);
+=======
+        {
+            entity
+                .HasOne(e => e.comidasActuales)
+                .WithOne()
+                .HasForeignKey<Combo>(e => e.codigoComidasActuales);
+        });
+
+        modelBuilder.Entity<HistorialComidas>(entity =>
+        {
+            entity
+                .HasMany(e => e.Comidas)
+                .WithMany(e => e.historialComidas)
+                .UsingEntity<ComboComida>(
+                    r => r
+                        .HasOne(e => e.comida)
+                        .WithMany(e => e.comboComidas)
+                        .HasForeignKey(e => e.codigoComida)
+                        .OnDelete(DeleteBehavior.NoAction),
+                    l => l
+                        .HasOne(e => e.historialComida)
+                        .WithMany(e => e.valor)
+                        .HasForeignKey(e => e.codigoHistorialComida)
+                        .OnDelete(DeleteBehavior.NoAction)
+                );
+>>>>>>> 27a8466e7adfef703006018fb0e31dfdd6dabc3a
         });
 
         modelBuilder.Entity<FoodsLog>(entity =>
@@ -78,17 +105,25 @@ public class ApplicationContext : DbContext
 
         modelBuilder.Entity<DescriptionsLog>(entity =>
         {
+<<<<<<< HEAD
             entity.Property(e => e.Value).HasColumnType("varchar(100)");
+=======
+            entity.Property(e => e.valor).HasColumnType("decimal");
+>>>>>>> 27a8466e7adfef703006018fb0e31dfdd6dabc3a
         });
 
         modelBuilder.Entity<PricesLog>(entity =>
         {
+<<<<<<< HEAD
             entity.Property(e => e.Value).HasColumnType("decimal");
         });
 
         modelBuilder.Entity<DiscountsLog>(entity =>
         {
             entity.Property(e => e.Value).HasColumnType("decimal");
+=======
+            entity.Property(e => e.valor).HasColumnType("decimal");
+>>>>>>> 27a8466e7adfef703006018fb0e31dfdd6dabc3a
         });
 
     //Run in cli
