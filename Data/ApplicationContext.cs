@@ -1,12 +1,15 @@
-﻿using _2dBurgerWebAPI.Models.Logs;
+﻿using _2dBurgerWebAPI.Models.Categories;
+using _2dBurgerWebAPI.Models.Logs;
 using _2dBurgerWebAPI.Models.Products;
 
 namespace _2dBurgerWebAPI.Data;
 
 using Microsoft.EntityFrameworkCore;
 
-public class ApplicationContext : DbContext
+public class ApplicationContext(DbContextOptions<ApplicationContext> options) : DbContext(options)
 {
+    public DbSet<FoodCategory> FoodCategories { get; set; } = null!;
+    public DbSet<ComboCategory> ComboCategories { get; set; } = null!;
     public DbSet<Food> Foods { get; set; } = null!;
     public DbSet<Combo> Combos { get; set; } = null!;
     public DbSet<FoodsLog> FoodsLog { get; set; } = null!;
@@ -15,7 +18,6 @@ public class ApplicationContext : DbContext
     public DbSet<PricesLog> PricesLog { get; set; } = null!;
     public DbSet<DiscountsLog> DiscountsLog { get; set; } = null!;
 
-    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         // its a bad practice use the string connection like this...
@@ -44,8 +46,20 @@ public class ApplicationContext : DbContext
                 .HasForeignKey<Product>(e => e.CurrentDiscountId);
         });
 
+        modelBuilder.Entity<Food>(entity =>
+        {
+            entity
+                .HasOne(e => e.CurrentFoodCategory)
+                .WithMany()
+                .HasForeignKey(e => e.CurrentFoodCategoryId);
+        });
+
         modelBuilder.Entity<Combo>(entity =>
         {
+            entity
+                .HasOne(e => e.CurrentComboCategory)
+                .WithOne()
+                .HasForeignKey<Combo>(e => e.CurrentComboCategoryId);
             entity
                 .HasOne(e => e.CurrentFoods)
                 .WithOne()

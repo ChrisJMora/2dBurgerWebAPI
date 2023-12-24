@@ -1,15 +1,20 @@
-﻿using _2dBurgerWebAPI.Models.Logs;
+﻿using _2dBurgerWebAPI.Models.Categories;
+using _2dBurgerWebAPI.Models.Logs;
 using _2dBurgerWebAPI.Models.Productos;
 
 namespace _2dBurgerWebAPI.Models.Products;
 
 public class Food : Product 
 {
+    // Required ID's
+    public int CurrentFoodCategoryId { set; get; }
+    
     // Navigation entitites
+    public virtual FoodCategory CurrentFoodCategory { get; set; } = null!;
     public virtual IEnumerable<FoodsLog> FoodLog { get; } = new List<FoodsLog>();
     public virtual IEnumerable<ComboFood> ComboFoods { get; } = new List<ComboFood>();
     
-    public void InitFood(string name, string description, decimal price, decimal discount)
+    public void InitFood(string name, string description, decimal price, decimal discount, FoodCategory foodCategory)
     {
         // Validations
         if (price < 0)
@@ -17,5 +22,6 @@ public class Food : Product
         
         InitProduct(name, description, discount);
         CurrentPrice = new PricesLog() { Date = DateTime.Now, Value = price };
+        CurrentFoodCategory = foodCategory;
     }
 }

@@ -2,5 +2,5 @@
 
 public class FoodDto : ProductDto
 {
-    
+    public required string FoodCategory { get; set; }
 }
