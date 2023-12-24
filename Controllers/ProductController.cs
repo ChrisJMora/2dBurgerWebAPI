@@ -1,5 +1,4 @@
 ﻿using _2dBurgerWebAPI.Models.Categories;
-using _2dBurgerWebAPI.Models.Logs;
 using _2dBurgerWebAPI.Models.Productos.DTO;
 using _2dBurgerWebAPI.Models.Products;
 
@@ -22,11 +21,53 @@ public class ProductController(ApplicationContext context) : Controller
     {
         return await context.FoodCategories.ToListAsync();
     }
+    
+    [HttpPost("AddFoodCategory/{name}")]
+    public async Task AddFoodCategory(string name)
+    {
+        await context.FoodCategories.AddAsync(new FoodCategory() { Name = name });
+        await context.SaveChangesAsync();
+    }
 
     [HttpGet("GetComboCategories")]
     public async Task<IEnumerable<ComboCategory>> GetComboCategories()
     {
         return await context.ComboCategories.ToListAsync();
+    }
+    
+    [HttpPost("AddComboCategory/{name}")]
+    public async Task AddComboCategory(string name)
+    {
+        await context.ComboCategories.AddAsync(new ComboCategory() { Name = name });
+        await context.SaveChangesAsync();
+    }
+    
+    [HttpGet("GetFoods")]
+    public IEnumerable<FoodDto> GetFoods()
+    {
+        var foodsDto = context.Foods.Select(food => new FoodDto()
+        {
+            Name = food.CurrentName.Value,
+            Description = food.CurrentDescription.Value,
+            Price = food.CurrentPrice.Value,
+            Discount = food.CurrentDiscount.Value,
+            IsActive = food.IsActive,
+            FoodCategory = food.CurrentFoodCategory.Name
+        });
+        return foodsDto;
+    }
+
+    [HttpPost("AddFood/{name}/{description}/{price:decimal}/{discount:decimal}/{foodCategoryId:int}")]
+    public async Task AddFood(string name, string description, decimal price, decimal discount, int foodCategoryId)
+    {
+        var food = new Food();
+        var foodCategory = await context.FoodCategories.FindAsync(foodCategoryId);
+        if (foodCategory == null)
+            throw new Exception($"The food category with the id: {foodCategory} was not found");
+        food.InitFood(name, description, price, discount, foodCategory);
+        // Add Food
+        context.Foods.Add(food);
+        await context.SaveChangesAsync();
     }
     
     [HttpGet("GetCombos")]
@@ -57,50 +98,8 @@ public class ProductController(ApplicationContext context) : Controller
         });
         return combosDto;
     }
-
-    [HttpGet("GetFoods")]
-    public IEnumerable<FoodDto> GetFoods()
-    {
-        var foodsDto = context.Foods.Select(food => new FoodDto()
-        {
-            Name = food.CurrentName.Value,
-            Description = food.CurrentDescription.Value,
-            Price = food.CurrentPrice.Value,
-            Discount = food.CurrentDiscount.Value,
-            IsActive = food.IsActive,
-            FoodCategory = food.CurrentFoodCategory.Name
-        });
-        return foodsDto;
-    }
-
-    [HttpPost("AddFoodCategory/{name}")]
-    public async Task AddFoodCategory(string name)
-    {
-        await context.FoodCategories.AddAsync(new FoodCategory() { Name = name });
-        await context.SaveChangesAsync();
-    }
-
-    [HttpPost("AddComboCategory/{name}")]
-    public async Task AddComboCategory(string name)
-    {
-        await context.ComboCategories.AddAsync(new ComboCategory() { Name = name });
-        await context.SaveChangesAsync();
-    }
-
-    [HttpPost("AddFood/{name}/{description}/{price:decimal}/{discount:decimal}/{foodCategoryId:int}")]
-    public async Task AddFood(string name, string description, decimal price, decimal discount, int foodCategoryId)
-    {
-        var food = new Food();
-        var foodCategory = await context.FoodCategories.FindAsync(foodCategoryId);
-        if (foodCategory == null)
-            throw new Exception($"The food category with the id: {foodCategory} was not found");
-        food.InitFood(name, description, price, discount, foodCategory);
-        // Add Food
-        context.Foods.Add(food);
-        await context.SaveChangesAsync();
-    }
-
-    [HttpPost("AddCombo/{name}/{description}/{discount:decimal}")]
+    
+    [HttpPost("AddCombo/{name}/{description}/{discount:decimal}/{comboCategoryId:int}")]
     public async Task AddCombo(string name, string description, decimal discount,
         Dictionary<int, int> idFoods, int comboCategoryId )
     {

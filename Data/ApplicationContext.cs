@@ -83,30 +83,55 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options) : 
                         .HasForeignKey(e => e.FoodLogId)
                         .OnDelete(DeleteBehavior.NoAction)
                 );
+            entity
+                .HasOne(e => e.Product)
+                .WithOne()
+                .HasForeignKey<FoodsLog>(e => e.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<NamesLog>(entity =>
         {
             entity.Property(e => e.Value).HasColumnType("varchar(50)");
+            entity
+                .HasOne(e => e.Product)
+                .WithOne()
+                .HasForeignKey<NamesLog>(e => e.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<DescriptionsLog>(entity =>
         {
             entity.Property(e => e.Value).HasColumnType("varchar(100)");
+            entity
+                .HasOne(e => e.Product)
+                .WithOne()
+                .HasForeignKey<DescriptionsLog>(e => e.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<PricesLog>(entity =>
         {
-            entity.Property(e => e.Value).HasColumnType("decimal");
+            entity.Property(e => e.Value).HasColumnType("decimal(4,2)");
+            entity
+                .HasOne(e => e.Product)
+                .WithOne()
+                .HasForeignKey<PricesLog>(e => e.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<DiscountsLog>(entity =>
         {
-            entity.Property(e => e.Value).HasColumnType("decimal");
+            entity.Property(e => e.Value).HasColumnType("decimal(4,2)");
+            entity
+                .HasOne(e => e.Product)
+                .WithOne()
+                .HasForeignKey<DiscountsLog>(e => e.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
-    //Run in cli
-    //1) dotnet ef migrations add NameOfMigration
-    //2) dotnet ef database update
+        //Run in cli
+        //1) dotnet ef migrations add NameOfMigration
+        //2) dotnet ef database update
     }
 }
